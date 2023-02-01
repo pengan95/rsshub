@@ -1,0 +1,63 @@
+version: "3"
+
+services:
+  acme.sh:
+    image: neilpang/acme.sh
+    container_name: acme.sh
+    restart: always
+    command: daemon
+    environment:
+        - CF_Key=${CF_KEY}
+        - CF_Email=${CF_EMAIL}
+    volumes:
+        - ./acme/certs/:/acme.sh
+    network_mode: host
+
+  nginx:
+    image: nginx
+    restart: always
+    network_mode: host
+    volumes:
+      - ./acme/certs/:/etc/nginx/certs
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/log:/var/log/nginx
+      - ./nginx/www:/var/www
+    depends_on:
+      - rsshub
+
+  rsshub:
+    # two ways to enable puppeteer:
+    # * comment out marked lines, then use this image instead: diygod/rsshub:chromium-bundled
+    # * (consumes more disk space and memory) leave everything unchanged
+    image: diygod/rsshub
+    restart: always
+    expose:
+      - 1200
+    environment:
+      NODE_ENV: production
+      CACHE_TYPE: redis
+      REDIS_URL: "redis://redis:6379/"
+      PUPPETEER_WS_ENDPOINT: "ws://browserless:3000" # marked
+    depends_on:
+      - redis
+      - browserless # marked
+
+  browserless:
+    # marked
+    image: browserless/chrome # marked
+    restart: always # marked
+    ulimits:
+      # marked
+      core:
+        # marked
+        hard: 0 # marked
+        soft: 0 # marked
+
+  redis:
+    image: redis:alpine
+    restart: always
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
