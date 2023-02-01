@@ -9,7 +9,6 @@ services:
     environment:
         - CF_Key=${CF_KEY}
         - CF_Email=${CF_EMAIL}
-    user: "${UID}:${GID}"
     volumes:
         - ./acme/certs/:/acme.sh
 
@@ -19,7 +18,6 @@ services:
     ports:
       - 80:80
       - 443:443
-    user: "${UID}:${GID}"
     volumes:
       - ./acme/certs/:/etc/nginx/certs
       - ./nginx/conf.d:/etc/nginx/conf.d
