@@ -7,10 +7,10 @@ services:
     restart: always
     command: daemon
     environment:
-        - CF_Key=${CF_KEY}
-        - CF_Email=${CF_EMAIL}
+      - CF_Key=${CF_KEY}
+      - CF_Email=${CF_EMAIL}
     volumes:
-        - ./acme/certs/:/acme.sh
+      - ./acme/certs/:/acme.sh
 
   nginx:
     image: nginx
@@ -25,6 +25,7 @@ services:
       - ./nginx/www:/var/www
     depends_on:
       - rsshub
+      - alist
 
   rsshub:
     # two ways to enable puppeteer:
@@ -59,6 +60,19 @@ services:
     restart: always
     volumes:
       - redis-data:/data
+
+  alist:
+    image: 'xhofe/alist:latest'
+    restart: always
+    volumes:
+      - ./alist/data:/opt/alist/data'
+    expose:
+      - 5244
+    environment:
+      - PUID=0
+      - PGID=0
+      - UMASK=022
+    container_name: alist
 
 volumes:
   redis-data:
