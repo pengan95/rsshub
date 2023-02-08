@@ -65,7 +65,7 @@ services:
     image: 'xhofe/alist:latest'
     restart: always
     volumes:
-      - ./alist/data:/opt/alist/data'
+      - ./alist/data:/opt/alist/data
     expose:
       - 5244
     environment:
