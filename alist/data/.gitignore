@@ -1,0 +1,7 @@
+data.db
+data.db-shm
+data.db-wal
+log/
+bleve/
+tmp/
+config.json
